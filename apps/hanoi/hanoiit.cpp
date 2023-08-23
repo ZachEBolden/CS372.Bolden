@@ -9,13 +9,17 @@ void printIt(int , char , char );
 void MoveDisksHelper(stack<int> &, stack<int> &, char , char ) ;
 
 int main() {
-  for (auto numdisks: {3,5,6}) {
+  for (auto numdisks: {5,10,15,20,25,30,35}) {
       stack<int> source;
       stack<int> dest;
       stack<int> aux;
       cout << "Numdisks: " << numdisks << endl;
+      auto start = std::chrono::steady_clock::now();
       moveDisks(numdisks, source, aux, dest);
+      auto end = std::chrono::steady_clock::now();
+      std::chrono::duration<double> elasped_seconds = end - start;
       cout << "Moved " << numdisks << " pegs." <<  endl;
+      std::cout << " Elasped wall time (s): " << elasped_seconds.count();
     }
     return 0;
 }
@@ -52,13 +56,13 @@ void MoveDisksHelper(stack<int> &source, stack<int> &dest, char s, char d) {
     top2 = dest.top();
     dest.pop();
     source.push(top2);
-    printIt(top2, d, s);
+    //printIt(top2, d, s);
   }
   else if (dest.empty()) {
     top1 = source.top();
     source.pop();
     dest.push(top1);
-    printIt(top1, s, d);
+    //printIt(top1, s, d);
   }
   else if (source.top() > dest.top()) {
     top1 = source.top();
@@ -67,7 +71,7 @@ void MoveDisksHelper(stack<int> &source, stack<int> &dest, char s, char d) {
     dest.pop();
     source.push(top1);
     source.push(top2);
-    printIt(top2,d, s);
+    //printIt(top2,d, s);
   }
   else {
     top2 = dest.top();
@@ -76,7 +80,7 @@ void MoveDisksHelper(stack<int> &source, stack<int> &dest, char s, char d) {
     source.pop();
     dest.push(top2);
     dest.push(top1);
-    printIt(top1, s, d);
+   //printIt(top1, s, d);
   }
 }
 
