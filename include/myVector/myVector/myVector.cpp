@@ -3,10 +3,19 @@
 
 #include "myVector.h"
 
-using namespace std;
-
 int main()
 {
-	cout << "Hello CMake." << endl;
-	return 0;
+	myVector<int> testMyVector;
+
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << "Vector size: " << testMyVector.size() << std::endl;
+		std::cout << "Vector capacity: " << testMyVector.capacity() << std::endl;
+			testMyVector.push_back(i);
+	}
+		
+
+	testMyVector.traverse();
+	std::cout << std::endl;
+
 }
