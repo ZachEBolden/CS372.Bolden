@@ -10,19 +10,24 @@ int main() {
     const int TOPEG = 3;
     const int TEMPPEG = 2;
     const int NUMDISKS = 3;
-    for (auto numdisks: {3,5,6}) {
+    for (auto numdisks: {5,10,15,20,25,30,35}) {
       cout << "Numdisks: " << numdisks << endl;
+      auto start = std::chrono::steady_clock::now();
       moveDisks(numdisks, FROMPEG, TOPEG, TEMPPEG);
-      cout << "Moved " << numdisks << " pegs"
-           << " from peg " << FROMPEG
-           << " to peg " << TOPEG << endl;
+      auto end = std::chrono::steady_clock::now();
+      std::chrono::duration<double> elasped_seconds = end - start;
+      std::cout << " Elasped wall time (s): " << elasped_seconds.count();
+      //cout << "Moved " << numdisks << " pegs"
+      //     << " from peg " << FROMPEG
+      //     << " to peg " << TOPEG << endl;
+      cout << std::endl;
     }
 }
 
 void moveDisks(int num, int fromPeg, int toPeg, int tempPeg) {
      if (num > 0) {
         moveDisks(num -1, fromPeg, tempPeg, toPeg);
-        printIt(num, fromPeg, toPeg);
+        //printIt(num, fromPeg, toPeg);
         moveDisks(num-1, tempPeg, toPeg, fromPeg);
      }
 }
