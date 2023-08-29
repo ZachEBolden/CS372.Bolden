@@ -6,7 +6,7 @@
 //
 #pragma once
 #include <iostream>
-#include "vector.h"
+#include "vector.hpp"
 
 template <typename Thing>
 class Bag {
