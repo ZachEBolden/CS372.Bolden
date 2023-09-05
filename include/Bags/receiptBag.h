@@ -1,38 +1,63 @@
 #pragma once
 
-#include "../bag.hpp";
+#include <iostream>
+#include "../myVector/myVector/myVector.h"
+#include <algorithm>
+
+//received help from Joseph Gentry
 
 template <typename Thing>
-class Bag {
+class ReceiptBag {
+private:
+    struct Item
+    {
+        Thing value;
+        int receipt;
+    };
+
+
+    myVector<Item> bagVector;
+    int nextReceipt;
+
 public:
-    void insert(Thing aThing) {
-        bagContents.push_back(aThing);
-        bagSize++;
+    ReceiptBag() : nextReceipt(1) {}
+
+    int insert( Thing aThing)
+    {
+        int receipt = nextReceipt++;
+        bagVector.push_back({ aThing, receipt });
+        return receipt;
     }
-    Thing& pop() {
-        Thing aThing;
-        if (bagContents.size() > 0) {
-            aThing = bagContents[bagSize];
-            bagSize--;
+
+    Thing& remove(int receipt)
+    {
+        auto iter = std::find_if(bagVector.begin(), bagVector.end(),
+            [receipt](const Item& item) { return item.receipt == receipt; });
+
+        if (iter == bagVector.end())
+        {
+            throw std::runtime_error("This in not in the bag bro!");
         }
-        else {
-            std::cerr << "Can't pop out of an empty bag" << std::endl;
-        }
-        return aThing;
+
+        Thing& removeItem = iter->value;
+        bagVector.erase(iter);
+        return removeItem;
     }
-    int size() {
-        return bagSize;
+
+    int size() const 
+    {
+        return bagVector.size();
     }
-    int count(Thing aThing) {
-        int bagCount = 0;
-        for (int i = 0; i < bagSize; i++) {
-            if (bagContents[i] == aThing) {
-                bagCount++;
+
+    int count(const Thing& aThing) const 
+    {
+        int count = 0;
+        for (const auto& item : bagVector) {
+            if (isSameThing(item.value, aThing)) {
+                count++;
             }
         }
-        return bagCount;
+        return count;
     }
-private:
-    vector<Thing> bagContents;
-    int bagSize = 0;
+
 };

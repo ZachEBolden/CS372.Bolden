@@ -26,5 +26,11 @@
     <ClInclude Include="..\bag.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\vector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\myVector\myVector\myVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

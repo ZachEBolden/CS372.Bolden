@@ -1,14 +1,24 @@
 //testing bag and receipts
 //Zachary Bolden
 
-#include "../bag.hpp"
+#include "receiptBag.h"
 
 int main()
 {
-	Bag<int> testBag;
+    ReceiptBag<int> testBag;
 
-	for (int i = 0; i < 10; i++)
-		testBag.insert(i);
+    int receipt1 = testBag.insert(10);
+    int receipt2 = testBag.insert(20);
+    int receipt3 = testBag.insert(10);
 
+    std::cout << "Size: " << testBag.size() << std::endl; // Output: Size: 3
 
+    testBag.remove(receipt2);
+
+    std::cout << "Size: " << testBag.size() << std::endl; // Output: Size: 2
+
+    int count = testBag.count(10);
+    std::cout << "Count: " << count << std::endl; // Output: Count: 2
+
+    return 0;
 }

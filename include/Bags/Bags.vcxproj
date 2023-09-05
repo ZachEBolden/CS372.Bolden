@@ -131,6 +131,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bag.hpp" />
+    <ClInclude Include="..\myVector\myVector\myVector.h" />
+    <ClInclude Include="..\vector.hpp" />
     <ClInclude Include="receiptBag.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
