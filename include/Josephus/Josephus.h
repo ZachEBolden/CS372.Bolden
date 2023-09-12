@@ -93,6 +93,5 @@ private:
 		tail = nullptr;
 		people = 0;
 		deadpeople = 0;
-		delete current;
 	}
 };
