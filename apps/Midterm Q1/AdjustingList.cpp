@@ -23,7 +23,7 @@ int main()
 	std::cout << "Please enter your search request" << std::endl;
 	std::cin >> search;
 
-	testList.find(search);
+	testList.push_front(testList.find(search));
 
-
+	return 0;
 }

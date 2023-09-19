@@ -4,7 +4,7 @@
 #include <list>
 
 template <typename T>
-class AdjustingList : public std::list
+class AdjustingList : public std::list<T>
 {
 private:
     class Node {
@@ -36,22 +36,22 @@ private:
         tail = newNode;
     }
 public:
-    list()
+    AdjustingList()
     {
         setupList();
     }
-    list(T newData)
+    AdjustingList(T newData)
     {
         setupList();
         head->data = newData;
     }
-    list(list& rhs)
+    AdjustingList(AdjustingList& rhs)
     {
         deleteListContents();
         head = rhs.head;
         tail = rhs.tail;
     }
-    ~list()
+    ~AdjustingList()
     {
         deleteListContents();
     }
@@ -112,16 +112,17 @@ public:
         }
 
     }
-    T* find(T itemToFind)
+    T find(T itemToFind)
     {
         Node* current = head; // Initialize current
         while (current != NULL) {
             if (current->data == itemToFind)
             {
-
+                std::cout << "Found" << std::endl;
+                return current->data;
             }
             current = current->next;
         }
-        return false;
+        std::cout << "Not found." << std::endl;
     }
 };
