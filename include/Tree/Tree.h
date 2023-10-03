@@ -23,9 +23,9 @@ public:
         root(Node(value, lft->root, rgt->root)) {}
 
     bool isEmpty() const { return !root };
-    V root() const { return root->val };
-    Tree& left() const { return root->left };
-    Tree& right() const { return root->right };
+    V root() const { return root->val; }
+    Tree& left() const { return root->left; }
+    Tree& right() const { return root->right; }
 
     bool member(V x) const 
     {
