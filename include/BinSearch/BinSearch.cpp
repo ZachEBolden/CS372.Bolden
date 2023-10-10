@@ -31,7 +31,8 @@ template <typename T>
 bool binarySearch(std::vector<T> aSortedVector, T itemToBeFound, bool printDebugData)
 {
 	size_t middle, start = 0;
-	size_t end = aSortedVector.size();
+	size_t end = aSortedVector.size()-1;
+	int compares = 0;
 
 	if (printDebugData)
 	{
@@ -40,13 +41,27 @@ bool binarySearch(std::vector<T> aSortedVector, T itemToBeFound, bool printDebug
 
 	while (start < end)
 	{
-		middle = start + ((end - start) / 2);
-		if (itemToBeFound > aSortedVector[middle])
-			start = middle + 1;
-		else if (itemToBeFound > aSortedVector[middle])
-			end = middle;
-		else
+		middle = start + (end - start) / 2;
+		
+		if (aSortedVector[middle] == itemToBeFound)
+		{
+			if (printDebugData)
+			{
+				std::cout << "Compared: " << compares << std::endl;
+			}
 			return true;
+		}
+		else if (aSortedVector[middle] < itemToBeFound)
+			start = middle + 1;
+		else
+			end = middle - 1;
+		compares++;
+	}
+
+	if (printDebugData)
+	{
+		std::cout << "Item not found." << std::endl
+			<< "Comparisons: " << compares << std::endl;
 	}
 
 	return false;
