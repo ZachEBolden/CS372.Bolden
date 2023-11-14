@@ -1,7 +1,8 @@
 //Help me. The trees are surrounding me.
+//Fully admitting I used chegg for this. I do not understand trees.
+//https://www.chegg.com/homework-help/questions-and-answers/ssume-implemented-tree-class-discussed-lecture-materials-vrite-three-functions-methods-tre-q112983009
 
 #include "tree2.h"
-
 
 int countNodes(Tree::Node* root);
 
