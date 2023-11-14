@@ -4,158 +4,185 @@
 #include<queue>
 #include <iostream>
 
-template<typename V>
-class Tree {
+//received help from Jo Gentry
+
+template <typename T>
+class Tree
+{
 private:
-    struct Node
-    {
-        Node(V v, std::shared_ptr<Node>& l, std::shared_ptr<Node>& r) :
-            value(v), left(l), right(r) {}
-        V value;
+    class Node {
+    public:
+        T data;
         std::shared_ptr<Node> left;
         std::shared_ptr<Node> right;
+
+        Node(const T& newData) : data(newData), left(nullptr), right(nullptr) {}
     };
-    explicit Tree(std::shared_ptr<Node>& node) : root(node) {}
+
     std::shared_ptr<Node> root;
+
 public:
-    Tree() {}
-    Tree(Tree const& lft, V value, Tree const& rgt) :
-        root(Node(value, lft->root, rgt->root)) {}
+    Tree() : root(nullptr) {}
 
-    bool isEmpty() const { return !root };
-    V root() const { return root->val; }
-    Tree& left() const { return root->left; }
-    Tree& right() const { return root->right; }
-
-    bool member(V x) const 
-    {
-        if (isEmpty())
-            return false;
-        V y = root();
-        if (x < y)
-            return left().member(x);
-        else if (y < x)
-            return right().member(x);
-        else
-            return true;
+    void insert(const T& value) {
+        if (root == nullptr) {
+            root = std::make_shared<Node>(value);
+        }
+        else {
+            insertNode(root, value);
+        }
     }
 
-    //used https://stackoverflow.com/questions/34249476/in-binary-tree-checking-if-given-node-is-leaf-node-or-not
-    //for help on how to build this
-    bool isLeaf() const
-    {
-        if (isEmpty())
-            return false;
-        V y = root();
-        if (left() == nullptr && right() == nullptr)
-            return true;
-        else if (x < y)
-            return isLeaf(right());
-        else
-            return isLeaf(left());
+    bool search(const T& value) const {
+        return searchNode(root, value);
     }
 
-    Tree insert(V x) const {
-        if (isEmpty())
-            return Tree(Tree(), x, Tree());
-        V y = root();
-        if (x < y)
-            return Tree(left().insert(x), y, right());
-        else if (y < x)
-            return Tree(left(), y, right().insert(x));
-        else
-            return *this; 
+    bool remove(const T& value) {
+        return removeNode(root, value);
     }
 
-    void preorder(std::function<void(V)> visit) const 
-    {
-        if (isEmpty())
+    template<typename T, typename Func>
+    void levelTraversal(const Tree<T>& tree, Func&& doIt) {
+        std::queue<std::shared_ptr<typename Tree<T>::Node>> nodeQueue;
+        if (tree.root != nullptr) {
+            nodeQueue.push(tree.root);
+        }
+
+        int level = 0;
+        while (!nodeQueue.empty()) {
+            int currentLevelSize = nodeQueue.size();
+            for (int i = 0; i < currentLevelSize; ++i) {
+                std::shared_ptr<typename Tree<T>::Node> current = nodeQueue.front();
+                nodeQueue.pop();
+                doIt(current->data);
+
+                if (current->left != nullptr) {
+                    nodeQueue.push(current->left);
+                }
+                if (current->right != nullptr) {
+                    nodeQueue.push(current->right);
+                }
+            }
+            ++level;
+        }
+    }
+    template<typename T>
+    void printTree(const std::shared_ptr<typename Tree<T>::Node>& node) {
+        if (node == nullptr) {
             return;
-        V contents = root();
-        visit(contents);
-        left().preorder(visit);
-        right().preorder(visit);
+        }
+
+        std::cout << node->data << " ";
+        printTree<T>(node->left);
+        printTree<T>(node->right);
+    }
+    template<typename T>
+    std::shared_ptr<typename Tree<T>::Node> pruneNode(const std::shared_ptr<typename Tree<T>::Node>& node) {
+        if (node == nullptr) {
+            return nullptr;
+        }
+        else if (node->left == nullptr && node->right == nullptr) {
+            return nullptr;
+        }
+        else {
+            node->left = pruneNode<T>(node->left);
+            node->right = pruneNode<T>(node->right);
+            return node;
+        }
     }
 
-    void inorder(std::function<void(V)> visit) const 
-    {
-        if (isEmpty()) return;
-        left().inorder(visit);
-        V contents = root();
-        visit(contents);
-        right().inorder(visit);
+    template<typename T>
+    Tree<T> prune(const Tree<T>& tree) {
+        Tree<T> prunedTree;
+        prunedTree.root = pruneNode<T>(tree.root);
+
+        std::cout << "Pruned Tree: ";
+        printTree<T>(prunedTree.root);
+        std::cout << std::endl;
+
+        return prunedTree;
     }
 
-    void postorder(std::function<void(V)> visit) const 
-    {
-        if (isEmpty()) return;
-        left().postorder(visit);
-        right().postorder(visit);
-        V contents = root();
-        visit(contents);
+
+
+
+private:
+    void insertNode(std::shared_ptr<Node>& node, const T& value) {
+        if (value < node->data) {
+            if (node->left == nullptr) {
+                node->left = std::make_shared<Node>(value);
+            }
+            else {
+                insertNode(node->left, value);
+            }
+        }
+        else if (value > node->data) {
+            if (node->right == nullptr) {
+                node->right = std::make_shared<Node>(value);
+            }
+            else {
+                insertNode(node->right, value);
+            }
+        }
     }
 
-    //used https://www.geeksforgeeks.org/deletion-in-binary-search-tree/
-    //for help
-    Node Delete(V x)
-    {
-        if (isEmpty())
-        {
+    bool searchNode(const std::shared_ptr<Node>& node, const T& value) const {
+        if (node == nullptr) {
             return false;
         }
-
-        V y = root();
-        if (x < y)
-        {
-            return left().Delete(x);
+        else if (value == node->data) {
+            return true;
         }
-        else if (x > y)
-        {
-            return right().Delete(x);
+        else if (value < node->data) {
+            return searchNode(node->left, value);
         }
-        else
-        {
-            if (left() == nullptr)
-            {
-                shared_ptr<Node> temp = root().right();
-                delete root;
-                return temp;
-
-            }
-            else if (right() == nullptr)
-            {
-
-                shared_ptr<Node> temp = root().left();
-                delete root;
-                return temp;
-            }
-            else
-            {
-
-                std::shared_ptr<Node> tempParen = root();
-                shared_ptr<Node> temp = root().right();
-
-                while (temp.left() != nullptr)
-                {
-                    tempParen = temp;
-                    temp = temp.left();
-                }
-
-                if (tempParen != root())
-                {
-                    tempParen.left() = temp.right();
-                }
-                else
-                {
-                    tempParen.right() = temp.right();
-                }
-                root = temp;
-
-                delete temp;
-
-                return root;
-
-            }
+        else {
+            return searchNode(node->right, value);
         }
     }
+    //Question 3
+    bool removeNode(std::shared_ptr<Node>& node, const T& value) {
+        if (node == nullptr) {
+            return false;
+        }
+        else if (value < node->data) {
+            return removeNode(node->left, value);
+        }
+        else if (value > node->data) {
+            return removeNode(node->right, value);
+        }
+        else {
+
+            if (node->left == nullptr && node->right == nullptr) {
+
+                node = nullptr;
+            }
+            else if (node->left == nullptr) {
+
+                node = node->right;
+            }
+            else if (node->right == nullptr) {
+
+                node = node->left;
+            }
+            else {
+
+                std::shared_ptr<Node> baby = getMinValueNode(node->right);
+                node->data = baby->data;
+                removeNode(node->right, baby->data);
+            }
+            return true;
+        }
+    }
+
+
+
+    std::shared_ptr<Node> getMinValueNode(const std::shared_ptr<Node>& node) const {
+        std::shared_ptr<Node> current = node;
+        while (current->left != nullptr) {
+            current = current->left;
+        }
+        return current;
+    }
+
 };
