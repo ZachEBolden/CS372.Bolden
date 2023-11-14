@@ -1,19 +1,18 @@
 //Help me. The trees are surrounding me.
 
-#include "../../include/Tree/Tree.h"
-template <typename T>
-int countNodes(Tree<T>);
+#include "tree2.h"
 
-template <typename T>
-void countInternals(const std::shared_ptr<typename Tree<T>::Node>&);
 
-template <typename T>
-void treeSum(const std::shared_ptr<typename Tree<T>::Node>&);
+int countNodes(Tree::Node* root);
+
+int countInternals(Tree::Node* root);
+
+void treeSum(Tree::Node* root, int& sum);
 
 int main()
 {
-    int count;
-    Tree<int> myTree;
+    int nodeCount,internalCount, extPath=0;
+    Tree myTree;
     myTree.insert(4);
     myTree.insert(2);
     myTree.insert(6);
@@ -22,28 +21,45 @@ int main()
     myTree.insert(5);
     myTree.insert(7);
 
-    count = countNodes(myTree);
+    nodeCount = countNodes(myTree.root);
+
+    internalCount = countInternals(myTree.root);
+
+    treeSum(myTree.root, extPath);
+    cout << "External path length of the tree: " << extPath << endl;
 }
-template <typename T>
-int countNodes(Tree<T> current) {
-    if (current == nullptr) {
+
+int countNodes(Tree::Node* root) {
+    if (root == nullptr) {
         return 0;
     }
-
-    int leftCount = countNodes(current->left);
-    int rightCount = countNodes(current->right);
-
-    return 1 + leftCount + rightCount;
+    else {
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
 }
 
-//template <typename T>
-//void countInternals(const std::shared_ptr<typename Tree<T>::Node>& )
-//{
 
-//}
+int countInternals(Tree::Node* root)
+{
+    if (root == nullptr || (root->left == nullptr && root->right == nullptr)) {
+        return 0;
+    }
+    else {
+        return 1 + countInternals(root->left) + countInternals(root->right);
+    }
+}
 
-//template <typename T>
-//void treeSum(const std::shared_ptr<typename Tree<T>::Node>&,)
-//{
-
-//}
+void treeSum(Tree::Node* root, int& sum)
+{
+    if (root == nullptr) {
+        return;
+    }
+    else if (root->left == nullptr && root->right == nullptr) {
+        sum += 1;
+    }
+    else {
+        sum += 1;
+        treeSum(root->left, sum);
+        treeSum(root->right, sum);
+    }
+}
